@@ -700,4 +700,4 @@ zlib                      1.2.8                         3
 ```
 ## 8. Acknowledge
 
-Thanks X. Z. Wang for the discussions and helps about the initial framework of this project. I laso thanks the reviewer for there efforts.
+Thanks X. Z. Wang for the discussions and helps about the initial framework of this project. I also thanks the reviewer for there efforts.
