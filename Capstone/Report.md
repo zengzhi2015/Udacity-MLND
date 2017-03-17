@@ -698,3 +698,6 @@ xz                        5.2.2                         1
 zeromq                    4.1.5                         0 
 zlib                      1.2.8                         3 
 ```
+## 8. Acknowledge
+
+Thanks X. Z. Wang for the discussions and helps about the initial framework of this project. I laso thanks the reviewer for there efforts.
