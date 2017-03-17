@@ -533,7 +533,7 @@ Here, I want to show more typical samples that are failed to be recognized. They
 
 ![alt text][image34]
 
-It is found that most errors are duo to false positive and negative detection. As discussed before, this is caused by the inaccuracy of the region proposal network, which is caused by the low quality of the manually crafted dataset. Most samples do not contain much confusing texture. Thus, the trained network must not be very discriminative. To alleviate the problem of false negative detection, I should enhance the local contrast.
+It is found that most errors are due to false positive and negative detection. As discussed before, this is caused by the inaccuracy of the region proposal network, which is caused by the low quality of the manually crafted dataset. Most samples do not contain much confusing texture. Thus, the trained network must not be very discriminative. To alleviate the problem of false negative detection, I should enhance the local contrast.
 
 ### 5.2. Reflection
 
@@ -545,21 +545,21 @@ The most difficult part of this problem lies in the lack of region proposal data
 
 ### 5.3. Improvement
 
-First, in this project, I do not consider the cases where a digit is too large or too small, or even largely distorted. Hence, the multi-resolution problem is left to be solved in the future. Second, if only one number is permitted in one image, this problem can be represented as a sequence prediction problem. It is reported that the method based on long LSTM and GRU can get much better results.
+First, in this project, I do not consider the cases where a digit is too large or too small, or even largely distorted. Hence, the multi-resolution problem is left to be solved in the future. Second, if only one number is permitted in one image, this problem can be represented as a sequence prediction problem. It is reported that the method based on LSTM and GRU can get much better results.
 
 ## 6. References
 
-[1]. Netzer, Y., & Wang, T. (2011). Reading digits in natural images with unsupervised feature learning. Nips, 1–9. Retrieved from http://research.google.com/pubs/archive/37648.pdf.
-[2]. SVHN, http://ufldl.stanford.edu/housenumbers/.
-[3]. Sermanet, P., Chintala, S., & LeCun, Y. (2012). Convolutional neural networks applied to house numbers digit classification. Proceedings of International Conference on Pattern Recognition ICPR12, (Icpr), 10–13. http://doi.org/10.0/Linux-x86_64.
-[4]. LeCun, Y., Bottou, L., Bengio, Y., & Haffner, P. (1998). Gradient-based learning applied to document recognition. Proceedings of the IEEE, 86(11), 2278–2323. http://doi.org/10.1109/5.726791.
-[5]. MINST, http://yann.lecun.com/exdb/mnist/.
-[6]. Who is the best at X, http://rodrigob.github.io/are_we_there_yet/build/.
-[7]. Girshick, R., Donahue, J., Darrell, T., & Malik, J. (2014). Rich feature hierarchies for accurate object detection and semantic segmentation. In Proceedings of the IEEE Computer Society Conference on Computer Vision and Pattern Recognition (pp. 580–587). http://doi.org/10.1109/CVPR.2014.81.
-[8]. He, K., Zhang, X., Ren, S., & Sun, J. (2015). Spatial Pyramid Pooling in Deep Convolutional Networks for Visual Recognition. IEEE Transactions on Pattern Analysis and Machine Intelligence, 37(9), 1904–1916. http://doi.org/10.1109/TPAMI.2015.2389824.
-[9]. Girshick, R. (2016). Fast R-CNN. In Proceedings of the IEEE International Conference on Computer Vision (Vol. 11-18-NaN-2015, pp. 1440–1448). http://doi.org/10.1109/ICCV.2015.169.
-[10]. Ren, S., He, K., Girshick, R., & Sun, J. (2015). Faster R-CNN: Towards Real-Time Object Detection with Region Proposal Networks. Nips, 1–10. http://doi.org/10.1016/j.nima.2015.05.028.
-[11]. Goodfellow, I. J., Bulatov, Y., Ibarz, J., Arnoud, S., & Shet, V. (2013). Multi-digit Number Recognition from Street View Imagery using Deep Convolutional Neural Networks. arXiv Preprint arXiv: …, 1–13. Retrieved from http://arxiv.org/abs/1312.6082
+[1]. Netzer, Y., & Wang, T. (2011). Reading digits in natural images with unsupervised feature learning. Nips, 1–9. Retrieved from http://research.google.com/pubs/archive/37648.pdf.  
+[2]. SVHN, http://ufldl.stanford.edu/housenumbers/.  
+[3]. Sermanet, P., Chintala, S., & LeCun, Y. (2012). Convolutional neural networks applied to house numbers digit classification. Proceedings of International Conference on Pattern Recognition ICPR12, (Icpr), 10–13. http://doi.org/10.0/Linux-x86_64.  
+[4]. LeCun, Y., Bottou, L., Bengio, Y., & Haffner, P. (1998). Gradient-based learning applied to document recognition. Proceedings of the IEEE, 86(11), 2278–2323. http://doi.org/10.1109/5.726791.  
+[5]. MINST, http://yann.lecun.com/exdb/mnist/.  
+[6]. Who is the best at X, http://rodrigob.github.io/are_we_there_yet/build/.  
+[7]. Girshick, R., Donahue, J., Darrell, T., & Malik, J. (2014). Rich feature hierarchies for accurate object detection and semantic segmentation. In Proceedings of the IEEE Computer Society Conference on Computer Vision and Pattern Recognition (pp. 580–587). http://doi.org/10.1109/CVPR.2014.81.  
+[8]. He, K., Zhang, X., Ren, S., & Sun, J. (2015). Spatial Pyramid Pooling in Deep Convolutional Networks for Visual Recognition. IEEE Transactions on Pattern Analysis and Machine Intelligence, 37(9), 1904–1916. http://doi.org/10.1109/TPAMI.2015.2389824.  
+[9]. Girshick, R. (2016). Fast R-CNN. In Proceedings of the IEEE International Conference on Computer Vision (Vol. 11-18-NaN-2015, pp. 1440–1448). http://doi.org/10.1109/ICCV.2015.169.  
+[10]. Ren, S., He, K., Girshick, R., & Sun, J. (2015). Faster R-CNN: Towards Real-Time Object Detection with Region Proposal Networks. Nips, 1–10. http://doi.org/10.1016/j.nima.2015.05.028.  
+[11]. Goodfellow, I. J., Bulatov, Y., Ibarz, J., Arnoud, S., & Shet, V. (2013). Multi-digit Number Recognition from Street View Imagery using Deep Convolutional Neural Networks. arXiv Preprint arXiv: …, 1–13. Retrieved from http://arxiv.org/abs/1312.6082  
 
 ## 7. Appendix
 
