@@ -97,19 +97,23 @@ The metric used to evaluate the classification network and the region proposal n
 The SVHN dataset contains three datasets. The first one is a training dataset, the second one is a testing dataset, and the last one is called the extra dataset which is much larger and contains relatively simple samples. Each dataset is further divided into two parts. The first part is a dataset contains images of single digits. The following is a visualization of dataset samples. It can be seen that many samples are not so clear or highly blurred. A few samples are occluded partially.
 
 ![alt text][image1]
+
 Figure 1. Sample images of single digits.
 
 The second part consists of images containing full house numbers. All images are in RGB color space. The size of a single digit image is 32x32 pixels, while that of whole number images varies greatly. In addition, not all samples are well allocated. The digits of a number may aline vertically, horizontally, or neither. Following are some examples:
 
 ![alt text][image2]
+
 Figure 2. Whole number images.
 
 I also provide a statistics of the SVHN dataset. In detail, I first count the number of each type of digits and draw the distribution in the form of the histogram.
 
 ![alt text][image3]
+
 Figure 3. Statistics of the training dataset
 
 ![alt text][image4]
+
 Figure 4. Statistics of the extra dataset
 
 It can be observed that the number of samples in each class is roughly equal. This indicates a roughly balanced dataset.
@@ -121,6 +125,7 @@ There are three self-crafted datasets. The first one is the dataset used for tra
 In detail, for each image containing a whole number, I first measure the average height of all digits. Then, I rescaled the image so that the average height of all digits is 32 pixels. Then, I record the bounding boxes for each digit and reduce their size to half around their centers. Candidate regions have the size of 32x32 pixels. If the center of a randomly sampled region is located in one of the reduced bounding boxes, it is labeled as true. This setting guarantee that the overlapping rate is larger than 50%. The following is a visualization of some samples of this dataset.
 
 ![alt text][image5]
+
 Figure 5. Samples of the region proposal dataset.
 
 One can see from the visualization that this self-crafted dataset does not have sufficient high-quality negative samples which contain rich textures. This may cause false detection of the trained model in the future. Thus, it is expected that the performance of the region proposal network is the bottleneck of the whole algorithm.
@@ -132,6 +137,7 @@ The other self-crafted dataset is used to train the regression network. The samp
 The code for generating this dataset is also written in Matlab and can be found in this [file](./program/regression_data_generator_noclass.m). Following is a visualization of some samples in this dataset.
 
 ![alt text][image6]
+
 Figure 6. Samples of the regression dataset.
 
 The title of each image is the center shifts along the x and y direction in pixels. One can observe that the shift values are not strictly accurate. This is because the original bounding boxes provided by the SVHN dataset are not manually crafted. Hence, this may cause inaccuracy of the regression network. Fortunately, the regression network is used to fine tune the region proposal network. Therefore the inaccuracy of the regression network would not influence the overall performance too much.
@@ -139,6 +145,7 @@ The title of each image is the center shifts along the x and y direction in pixe
 The SVHN dataset has also provided us with images containing whole house numbers. However, the sizes of these images are not identical. This contradicts with the requirement that the input of a neural network should be fixed. To solve this problem, I just re-scale each image so that the height of a number is roughly 32 pixels. Then, I pad or crop the images so that all images have the same size of 96x192 pixels. The code for generating this dataset is also written in Matlab and can be found in this [file](./program/fixed_scale_test_gen.m). The following is a picture illustrating modified samples.
 
 ![alt text][image7]
+
 Figure 7. Samples of the modified whole number dataset.
 
 ### 2.3. Algorithms and techniques
@@ -184,11 +191,13 @@ It should be noted that the each of these models can be separated into two parts
 The feature extraction part consists of five convolution neural networks and four dense connected networks. It should be noted that we replace all densely connected layers with a 1x1 convolution neural network. The functions of the two type of layers are identical except that one does not need to flatten the output of the extraction network when computing the output of the 1x1 convolution layer. This modification is quite useful when computing the classification map of a bigger image since convolution is much faster than the sliding window. The following graphic shows the architecture of the classification network.
 
 ![alt text][image8]
+
 Figure 8. The architecture of the classification network.
 
 These are the parameters of the network. The code for model construction is contained in section 1.2.1 in the [IPython notebook file](./program/Training.ipynb).
 
 Table I. Summary of the classification network.
+
 ```
 Layer (type)                     Output Shape          Param #     Connected to                    
 ====================================================================================================
@@ -240,6 +249,7 @@ Non-trainable params: 0
 The classification network is first trained using the training dataset. To avoid overfitting, I add a dropout layer after the extraction network. The dropout rate is 0.5. In addition, I split the training data set into two parts, a training set and a validation set, the validation split rate is 0.2. I train the network using the Adam method so that I don't have to tune the learning rate manually. The loss is set to be the category cross entropy, and the metric is set to be accuracy. The size of each batch of data for training is 1024. The code for model training is contained in section 1.2.2 in the [IPython notebook file](./program/Training.ipynb). The training result is as follows.
 
 ![alt text][image9]
+
 Figure 9.  The training history of the classification network.
 
 Each training epoch costs about one minute. There are ten training epochs in total. Final evaluation accuracy is above 92%. A little overfitting can also be observed.
@@ -247,6 +257,7 @@ Each training epoch costs about one minute. There are ten training epochs in tot
 To make the model more accurate, we also train the model using a much larger dataset, the extra training dataset for five epochs. This data set contains 478017 samples. One can observe very little over-fitting during the training.The final validation accuracy is about 98%. Following are the details regarding the training process.
 
 ![alt text][image10]
+
 Figure 10.  The training history of the classification network.
 
 #### 3.2.2. Regression network
@@ -254,9 +265,11 @@ Figure 10.  The training history of the classification network.
 Feature extraction part of this network is just identical to that of the classification of work. The only difference between these two networks lies in the last layer of the densely connected the network. The last layer of the classification network has 10 outputs, while that of the regression network has only two outputs. Another difference is that the type of the final activation layer of the classification network is sigmoid, but that of the regression network is linear. The code for model construction is contained in section 1.3.1 in the [IPython notebook file](./program/Training.ipynb). Following are the details about the settings of this network.
 
 ![alt text][image11]
+
 Figure 11. The architecture of the regression network.
 
 Table II. Summary of the regression network.
+
 ```
 Layer (type)                     Output Shape          Param #     Connected to                    
 ====================================================================================================
@@ -308,11 +321,13 @@ Non-trainable params: 0
 We do not have to train the regression network from the beginning since both the classification network and the regression network share the same feature extraction layers. Hence， we just copy the weights of the extraction layers of the classification network to the corresponding regression layers before training and fix these layers. This technique is called the transfer learning. The training process of the regression network is very similar to that of the classification network, except that, the losses is set to be the mean absolute error. The code for model training is contained in section 1.3.2 in the [IPython notebook file](./program/Training.ipynb). The training process using the training dataset is given as follows.
 
 ![alt text][image12]
+
 Figure 12.  The training history of the regression network.
 
 The final validation loss is 2.3 which indicates that the standard navigation of location prediction is about two pixels. To make the model more accurate, I also train this model on the extra dataset. One could see from the following details that the accuracy has been slightly improved.   
 
 ![alt text][image13]
+
 Figure 13.  The training history of the regression network.
 
 #### 3.2.3. Region proposal network
@@ -320,9 +335,11 @@ Figure 13.  The training history of the regression network.
 The region proposal network is very similar to the above networks except for the final layer. The size of the output layer is 2 and the activation is sigmoid. The code for model construction is contained in section 1.4.1 in the [IPython notebook file](./program/Training.ipynb). The following are the details about the architecture of the network.
 
 ![alt text][image14]
+
 Figure 14. The architecture of the region proposal network.
 
 Table III. Summary of the region proposal network.
+
 ```
 Layer (type)                     Output Shape          Param #     Connected to                    
 ====================================================================================================
@@ -374,11 +391,13 @@ Non-trainable params: 0
 The code for model training is contained in section 1.4.2 in the [IPython notebook file](./program/Training.ipynb). The training history on the training dataset is shown in the following. One could observe from the result that the final validation accuracy is only slightly above 90% with large overfitting.
 
 ![alt text][image15]
+
 Figure 15.  The training history of the region proposal network.
 
 To alleviate overfitting, we also train this model on the extra dataset. The following result indicates a little improvement on the validation accuracy. One can see that the region proposal accuracy is much lower than the classification accuracy. This is why we need the regression network to find tune the result of the region proposal network.
 
 ![alt text][image16]
+
 Figure 16.  The training history of the region proposal network.
 
 #### 3.2.4 Merge together
@@ -388,9 +407,11 @@ Note that the input shape of all these three networks has 96x192 pixels. However
 The structure of the model can be further optimized by using a shared feature extractor. How to set up a model with multiple inputs and multiple outputs is well documented in the help section of the Keras web-set. Here, we only provide the graph and summary of the finally merged multi-output neural network. The code for model construction is contained in section 1.5.1-1.5.5 in the [IPython notebook file](./program/Training.ipynb).
 
 ![alt text][image17]
+
 Figure 17. The architecture of the merged network.
 
 Table IV. Summary of the merged network.
+
 ```
 Layer (type)                     Output Shape          Param #     Connected to                    
 ====================================================================================================
@@ -474,16 +495,19 @@ Non-trainable params: 0
 The output of the merged network consists of three maps: the classification map, the regression map, and the region proposal map. These maps can be easily back-project to the raw image plane by padding operation only since the neural network do not contain any pooling layers. The code for these step is contained in section 2.2.1-2.2.2 in the [IPython notebook file](./program/Recognition.ipynb). Following is an example image.
 
 ![alt text][image18]
+
 Figure 18. Example image.
 
 To visualize the classification map and the region proposal map in a concise way, we label pixels of each class with a unique color. The correspondence between each color and the associated class is shown in the following color bar.
 
 ![alt text][image19]
+
 Figure 19. The color bar.
 
 The result of the region proposal network is a binary map. I use it as a mask for the classification map. A typical classification map with region proposal map as its mask is shown bellow. The code for these step is contained in section 2.2.3 in the [IPython notebook file](./program/Recognition.ipynb).
 
 ![alt text][image20]
+
 Figure 20. The classification map with the region proposal map as its mask.
 
 One can see that the region proposal map may contain noise. Hence, to obtain all digit locations accurately, we need to fine tune the region proposal map. Since digits are seldom overlapped with each other, we basically have two ways to modify the region proposal map. The first one is using the median filter. The second one is using the regression map. To use the first method, one should note that the size of the filter must be chosen carefully, or digits with low contrast or smaller size would be erased. In this project, I use the regression map to fine tune the region proposal map. Details are as follows:
@@ -491,11 +515,13 @@ One can see that the region proposal map may contain noise. Hence, to obtain all
 First, for each positive pixel on the region proposal map, I move and accumulate the pixel value at a new location according to the shifting value predicted by the regression network. Considering the accuracy of the regression network, before the accumulation, I enlarge the pixel to a patch whose size is SxS pixels, where S stands for the standard deviation of the prediction. After this process, a heatmap can be obtained as follows:
 
 ![alt text][image21]
+
 Figure 21. The heatmap.
 
 Second, I apply a threshold to the heat map, so that an improved mask is obtained. It can be seen that the modified mask is more accurate that the raw region proposal map. Also, I apply connected component analysis to the improved mask, so that center regions for all digits are clearly separated. The code for these steps is contained in section 2.2.4 in the [IPython notebook file](./program/Recognition.ipynb).
 
 ![alt text][image22]
+
 Figure 22. The classification map with the modified region proposal map as its mask.
 
 Third, for each isolated digit region, I count the pixels for each class. Then, the class with most pixels are considered the dominant class for that region. I store both the centers and the classes of all isolated digit regions in a list as follows. The code for these steps is contained in section 2.2.5 in the [IPython notebook file](./program/Recognition.ipynb).
@@ -508,6 +534,7 @@ Third, for each isolated digit region, I count the pixels for each class. Then, 
 Since numbers are usually written from left to right or from top to bottom, I sort and combine the detected digits according to this convention. The code for these steps is contained in section 2.2.6 in the [IPython notebook file](./program/Recognition.ipynb). Both the detected digits and the numbers are clearly visualized upon the original image as follows:
 
 ![alt text][image23]
+
 Figure 23. The final result.
 
 #### 3.2.6. Complications in coding
@@ -545,23 +572,29 @@ Figure 24. Performace evaluations
 The following are some examples of the predictions given by these networks.
 
 ![alt text][image25]
+
 Figure 25. Predictions made by the classification network.
 
 ![alt text][image26]
+
 Figure 26. Predictions made by the region proposal network.
 
 ![alt text][image27]
+
 Figure 27. Predictions made by the regression network.
 
 I also evaluated the overall performance of the proposed model. The accuracy is 73.4%. Following are some examples of the prediction.
 
 ![alt text][image28]
+
 Figure 28. Prediction of '29.png'.
 
 ![alt text][image29]
+
 Figure 29. Prediction of '201.png'.
 
 ![alt text][image30]
+
 Figure 30. Prediction of '322.png'.
 
 ### 4.2. Compare to the benchmark results
@@ -575,15 +608,19 @@ To my knowledge, only the benchmark of the classification network is available. 
 Here, I want to show more typical samples that are failed to be recognized. They can help me to find out some clues to improving the proposed algorithm. Following are the samples:
 
 ![alt text][image31]
+
 Figure 31. Prediction of '8.png'.
 
 ![alt text][image32]
+
 Figure 32. Prediction of '36.png'.
 
 ![alt text][image33]
+
 Figure 33. Prediction of '53.png'.
 
 ![alt text][image34]
+
 Figure 34. Prediction of '65.png'.
 
 It is found that most errors are due to false positive and negative detection. As discussed before, this is caused by the inaccuracy of the region proposal network, which is caused by the low quality of the manually crafted dataset. Most samples do not contain much confusing texture. Thus, the trained network must not be very discriminative. To alleviate the problem of false negative detection, I should enhance the local contrast.
